@@ -31,7 +31,7 @@ router.get("/prs", async (req, res) => {
   try {
     const response = await axios.get(`https://api.github.com/repos/${owner}/${repo}/pulls`, {
       headers: {
-        Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+        Authorization: `Bearer ${process.env.VITE_GITHUB_TOKEN}`,
         "User-Agent": "SmartBlog-App",
       },
       params: { per_page, page, state },
