@@ -85,4 +85,40 @@ router.get("/repos", async (req, res) => {
   }
 });
 
+// ✅ PR 본문(Description)만 가져오기
+router.get("/pr-detail/:number", async (req, res) => {
+  const { owner, repo } = req.query;
+  const { number } = req.params;
+
+  if (!owner || !repo || !number) {
+    return res.status(400).json({ message: "owner, repo, number are required" });
+  }
+
+  try {
+    const headers = {
+      Authorization: `Bearer ${process.env.VITE_GITHUB_TOKEN}`,
+      "User-Agent": "SmartBlog-App",
+    };
+
+    // GitHub REST API
+    const { data } = await axios.get(
+      `https://api.github.com/repos/${owner}/${repo}/pulls/${number}`,
+      { headers }
+    );
+
+    res.json({
+      number: data.number,
+      title: data.title,
+      body: data.body,
+      author: data.user?.login,
+      html_url: data.html_url,
+      created_at: data.created_at,
+      merged: data.merged,
+    });
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+    res.status(500).json({ message: "GitHub API error", detail: err.message });
+  }
+});
+
 export default router;

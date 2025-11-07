@@ -34,6 +34,16 @@ export interface Repo {
   };
 }
 
+export interface SimplePRDetail {
+  number: number;
+  title: string;
+  body: string | null;
+  author: string;
+  html_url: string;
+  created_at: string;
+  merged: boolean;
+}
+
 const api = axios.create({
   baseURL: "/api/github",
 });
@@ -50,5 +60,14 @@ export const getPRs = async (owner: string, repo: string): Promise<PullRequest[]
 
 export const getMyRepos = async (): Promise<Repo[]> => {
   const res = await api.get("/repos"); 
+  return res.data;
+};
+
+export const getSimplePRDetail = async (
+  owner: string,
+  repo: string,
+  number: number
+): Promise<SimplePRDetail> => {
+  const res = await api.get(`/pr-detail/${number}`, { params: { owner, repo } });
   return res.data;
 };

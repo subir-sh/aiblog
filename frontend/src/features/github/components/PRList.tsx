@@ -2,9 +2,10 @@ import type { PullRequest } from "../../../shared/api/github";
 
 interface PRListProps {
   prs: PullRequest[];
+  onOpenDetail?: (number: number) => void; // ✅ 추가
 }
 
-export default function PRList({ prs }: PRListProps) {
+export default function PRList({ prs, onOpenDetail }: PRListProps) {
   if (!prs || prs.length === 0)
     return <p className="text-center text-gray-400">데이터 없음</p>;
 
@@ -16,14 +17,24 @@ export default function PRList({ prs }: PRListProps) {
           <div className="text-sm text-gray-500">
             #{pr.number} — {new Date(pr.createdAt).toLocaleString()}
           </div>
-          <a
-            href={pr.url}
-            target="_blank"
-            rel="noreferrer"
-            className="text-blue-500 text-sm hover:underline"
-          >
-            View PR on GitHub
-          </a>
+          <div className="flex justify-center items-center gap-3 mt-1">
+            <a
+              href={pr.url}
+              target="_blank"
+              rel="noreferrer"
+              className="text-blue-500 text-sm hover:underline"
+            >
+              View on GitHub
+            </a>
+            {onOpenDetail && (
+              <button
+                onClick={() => onOpenDetail(pr.number)}
+                className="text-sm px-2 py-1 rounded bg-gray-200 hover:bg-gray-300"
+              >
+                상세 보기
+              </button>
+            )}
+          </div>
         </li>
       ))}
     </ul>

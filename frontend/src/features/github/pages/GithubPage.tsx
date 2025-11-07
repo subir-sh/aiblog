@@ -2,11 +2,22 @@ import RepoInput from "../components/RepoInput";
 import CommitList from "../components/CommitList";
 import PRList from "../components/PRList";
 import RepoList from "../components/RepoList";
+import PRDetailModal from "../components/PRDetailModal";
 import Loader from "../../../shared/ui/Loader";
 import useFetch from "../../../shared/hooks/useFetch";
-import { getCommits, getPRs, getMyRepos } from "../../../shared/api/github";
-import type { Commit, PullRequest, Repo } from "../../../shared/api/github";
-import { useState } from "react";
+import {
+  getCommits,
+  getPRs,
+  getMyRepos,
+  getSimplePRDetail,
+} from "../../../shared/api/github";
+import type {
+  Commit,
+  PullRequest,
+  Repo,
+  SimplePRDetail,
+} from "../../../shared/api/github";
+import { useState, useEffect } from "react";
 
 export default function GithubPage() {
   const [owner, setOwner] = useState("");
@@ -18,9 +29,16 @@ export default function GithubPage() {
   const prsFetch = useFetch<PullRequest[], [string, string]>(getPRs);
   const reposFetch = useFetch<Repo[], []>(getMyRepos);
 
-  const handleSearch = (owner: string, repo: string) => {
-    commitsFetch.fetchData(owner, repo);
-    prsFetch.fetchData(owner, repo);
+  // ✅ PR 상세용 상태
+  const [detailOpen, setDetailOpen] = useState(false);
+  const [selectedPR, setSelectedPR] = useState<number | null>(null);
+  const prDetailFetch = useFetch<SimplePRDetail, [string, string, number]>(
+    getSimplePRDetail
+  );
+
+  const handleSearch = (o: string, r: string) => {
+    commitsFetch.fetchData(o, r);
+    prsFetch.fetchData(o, r);
     setShowRepos(false);
   };
 
@@ -34,6 +52,20 @@ export default function GithubPage() {
     setRepo(selectedRepo);
     handleSearch(selectedOwner, selectedRepo);
   };
+
+  // ✅ 상세 보기 열기
+  const openPRDetail = (number: number) => {
+    if (!owner || !repo) return;
+    setSelectedPR(number);
+    setDetailOpen(true);
+  };
+
+  // ✅ 상세 정보 fetch
+  useEffect(() => {
+    if (detailOpen && selectedPR != null && owner && repo) {
+      prDetailFetch.fetchData(owner, repo, selectedPR);
+    }
+  }, [detailOpen, selectedPR, owner, repo]);
 
   const loading = commitsFetch.loading || prsFetch.loading;
 
@@ -106,10 +138,17 @@ export default function GithubPage() {
             <CommitList commits={commitsFetch.data} />
           )}
           {!loading && activeTab === "prs" && prsFetch.data && (
-            <PRList prs={prsFetch.data} />
+            <PRList prs={prsFetch.data} onOpenDetail={openPRDetail} />
           )}
         </>
       )}
+
+      {/* ✅ PR 상세 모달 */}
+      <PRDetailModal
+        open={detailOpen}
+        onClose={() => setDetailOpen(false)}
+        data={prDetailFetch.data}
+      />
     </div>
   );
 }
