@@ -73,18 +73,18 @@ export default function GithubPage() {
   const handleLoadMoreCommits = async () => {
     const nextPage = commitPage + 1;
     const newData = await getCommits(owner, repo, nextPage);
-    if (commitsFetch.data) {
-      commitsFetch.data.push(...newData);
-    }
+    commitsFetch.setData(prev =>
+      prev ? [...prev, ...newData] : [...newData]
+    );
     setCommitPage(nextPage);
   };
 
   const handleLoadMorePRs = async () => {
     const nextPage = prPage + 1;
     const newData = await getPRs(owner, repo, nextPage);
-    if (prsFetch.data) {
-      prsFetch.data.push(...newData);
-    }
+    prsFetch.setData(prev =>
+      prev ? [...prev, ...newData] : [...newData]
+    );
     setPrPage(nextPage);
   };
 

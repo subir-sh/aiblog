@@ -20,5 +20,5 @@ export default function useFetch<T, A extends any[]>(
     }
   }, [apiFunc]);
 
-  return { data, loading, error, fetchData };
+  return { data, loading, error, fetchData, setData };
 }
