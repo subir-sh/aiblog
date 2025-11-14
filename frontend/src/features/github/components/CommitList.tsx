@@ -14,7 +14,7 @@ export default function CommitList({ commits }: CommitListProps) {
         <li key={c.sha} className="border-b py-2">
           <div className="font-semibold">{c.commit.message}</div>
           <div className="text-sm text-gray-500">
-            {c.commit.author.name} —{" "}
+            {c.commit.author.name} {" - "}
             {new Date(c.commit.author.date).toLocaleString()}
           </div>
           <a
