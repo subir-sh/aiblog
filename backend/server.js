@@ -1,10 +1,8 @@
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
+import "dotenv/config";
 import githubRouter from "./features/github/github.router.js";
 import llmRouter from "./features/llm/llm.router.js";
-
-dotenv.config();
 
 const app = express();
 app.use(cors());

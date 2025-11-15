@@ -13,12 +13,13 @@ export interface Commit {
 export interface PullRequest {
   number: number;
   title: string;
-  url: string;
-  createdAt: string;
+  html_url: string;
+  created_at: string;
   author: {
     login: string;
     url: string;
   };
+  body?: string;
 }
 
 export interface Repo {
