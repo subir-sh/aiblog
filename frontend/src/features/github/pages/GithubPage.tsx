@@ -178,6 +178,8 @@ export default function GithubPage() {
                 <>
                   <CommitList
                     commits={commitsFetch.data}
+                    owner={owner}
+                    repo={repo}
                     onSummary={(title, summary) => {
                       setSummaryTitle(title);
                       setSummaryResult(summary);
@@ -198,6 +200,8 @@ export default function GithubPage() {
                 <>
                   <PRList
                     prs={prsFetch.data}
+                    owner={owner}
+                    repo={repo}
                     onOpenDetail={openPRDetail}
                     onSummary={(title, summary) => {
                       setSummaryTitle(title);

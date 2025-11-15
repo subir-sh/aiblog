@@ -43,6 +43,16 @@ export interface SimplePRDetail {
   merged: boolean;
 }
 
+export interface CommitDetail {
+  message: string;
+  body?: string | null;
+  files: {
+    filename: string;
+    status: string;
+    patch?: string;
+  }[];
+}
+
 const BASE_URL = "/api/github";
 
 async function apiFetch<T>(
@@ -104,5 +114,17 @@ export const getSimplePRDetail = async (
   return apiFetch<SimplePRDetail>(`/pr-detail/${number}`, {
     owner,
     repo,
+  });
+};
+
+export const getCommitDetail = async (
+  owner: string,
+  repo: string,
+  sha: string
+): Promise<CommitDetail> => {
+  return apiFetch<CommitDetail>("/commit-detail", {
+    owner,
+    repo,
+    sha,
   });
 };

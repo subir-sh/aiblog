@@ -42,3 +42,6 @@ export const fetchPRDetail = async ({ owner, repo, number }) => {
     merged: data.merged,
   };
 };
+
+export const fetchCommitDetail = ({ owner, repo, sha }) =>
+  githubFetch(`/repos/${owner}/${repo}/commits/${sha}`);
