@@ -18,6 +18,7 @@ import type {
   Repo,
   SimplePRDetail,
 } from "../../../shared/api/github";
+import { usePosts } from "../../../shared/contexts/PostsContext";
 import { useState, useEffect } from "react";
 
 interface Summary {
@@ -39,6 +40,8 @@ export default function GithubPage() {
   const commitsFetch = useFetch<Commit[], [string, string]>(getCommits);
   const prsFetch = useFetch<PullRequest[], [string, string]>(getPRs);
   const reposFetch = useFetch<Repo[], []>(getMyRepos);
+
+  const { dispatch } = usePosts();
 
   // ✅ PR 상세용 상태
   const [detailOpen, setDetailOpen] = useState(false);
@@ -99,13 +102,14 @@ export default function GithubPage() {
   const handleSaveSummary = () => {
     if (!selectedSummary) return;
 
-    const posts = JSON.parse(localStorage.getItem("blog-posts") || "[]");
-    posts.push({
-      title: selectedSummary.title,
-      content: selectedSummary.content,
-      createdAt: new Date().toISOString(),
+    dispatch({
+      type: "ADD_POST",
+      payload: {
+        title: selectedSummary.title,
+        content: selectedSummary.content,
+        createdAt: new Date().toISOString()
+      }
     });
-    localStorage.setItem("blog-posts", JSON.stringify(posts));
 
     alert("저장 완료!");
   };

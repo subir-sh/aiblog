@@ -1,16 +1,8 @@
 import ReactMarkdown from "react-markdown";
-import { useState } from "react";
-
-interface SavedPost {
-  title: string;
-  content: string;
-  createdAt: string;
-}
+import { usePosts } from "../../../shared/contexts/PostsContext";
 
 export default function MyPostsPage() {
-  const [posts] = useState<SavedPost[]>(() => {
-    return JSON.parse(localStorage.getItem("blog-posts") || "[]");
-  });
+  const { posts } = usePosts();
 
   if (posts.length === 0) {
     return (
